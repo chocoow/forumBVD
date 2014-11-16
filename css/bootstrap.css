@@ -6351,4 +6351,78 @@ button.close {
     display: none !important;
   }
 }
+
+.wrap
+{
+  margin: 0 auto;
+  width:600px;
+}
+
+.menu
+{
+  padding:0;
+  list-style:none;
+  width:550px;
+  font-size:18px;
+  background:#c1c1c1;
+  border: 1px solid rgba(0,0,0,0.8);
+}
+
+.menu li a 
+{
+  display: block;
+  border-bottom:1px solid rgba(0,0,0,0.2);
+  border-top:1px solid rgba(255,255,0,0.2);
+  background:#3e3f44;
+  text-decoration: none;
+  color:#fff;
+  text-shadow: 1px 0px 1px rgba(0,0,0,0.2);
+}
+
+.menu li ul li a
+{
+  font-size: 14px;
+  color:#47689d;
+  text-shadow: 1px 0px 1px rgba(255,255,0,0.2);
+  filter : dropshadow(color=#000, offx=1, offy=0);
+}
+
+.menu li a:hover
+{
+  background:#4a6ba2;
+}
+
+.menu ul
+{
+  margin:0;
+  padding:0;
+  list-style: none;
+  height:0;
+  overflow:hidden;
+  transition:1s;
+  -moz-transition:1s;
+  -webkit-transition:1s;
+}
+
+.menu li:hover ul
+{
+  height : 210px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.menu ul li a
+{
+  background:#d2d2d2;
+}
+
+.menu ul li :hover
+{
+  background:#c1c1c1;
+}
+
+.menu ul li img
+{
+  margin-right:10px;
+}
 /*# sourceMappingURL=bootstrap.css.map */

@@ -5,21 +5,27 @@
 	{
 		extract($_POST);
 		$password = sha1($password);
-		$requete = $bdd->prepare('SELECT * FROM user WHERE userlogin =:login AND userpassword = :password AND UserRole <> 0');
+		$requete = $bdd->prepare('SELECT * FROM user WHERE userlogin =:login AND userpassword = :password');
 		$requete->bindValue(':login',$login, PDO::PARAM_STR);
 		$requete->bindValue(':password',$password, PDO::PARAM_STR);
 		$requete->execute();
 		if($requete->rowCount()==1)
 		{
 			extract($requete->fetch());
-			$_SESSION['auth'] = 1;
-			$_SESSION['id'] = $UserId;
-			$_SESSION['login'] = $UserLogin;
-			$_SESSION['droit'] = $UserRole;
-			$_SESSION['membre_avatar'] = $UserAvatar;
-			setFlash("Vous etes maintenant connecté, enjoy !","");
-			echo flash();
-			header("Location:".WEBROOT."index.php");
+			if($UserRole == 0)
+			{
+				setFlash("Ce compte a été banni, veuillez contacter un admin.<br/><a href='index.php'>Retour Acceuil</a> <br> ","Danger");
+				echo flash();
+			}
+			else
+			{	
+				$_SESSION['auth'] = 1;
+				$_SESSION['id'] = $UserId;
+				$_SESSION['login'] = $UserLogin;
+				$_SESSION['droit'] = $UserRole;
+				$_SESSION['membre_avatar'] = $UserAvatar;
+				header("Location:".WEBROOT."index.php");
+			}
 		}
 		else
 		{

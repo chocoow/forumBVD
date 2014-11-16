@@ -81,7 +81,7 @@
 	   		echo'<div class="container theme-showcase" role="main">';
 			echo'<div class = "jumbotron">';
 			echo'<h1>Inscription terminée</h1>';
-		    echo'<p>Bienvenue chez les fous'.stripslashes(htmlspecialchars($_POST['login'])).'</p>
+		    echo'<p>Bienvenue '.stripslashes(htmlspecialchars($_POST['login'])).'</p>
 			<p><a href="<?php echo WEBROOT; ?>index.php">HOME</a></p>';
 			echo'</div></div>';
 
@@ -93,16 +93,21 @@
 		   	{
 		   		$nomavatar= "defaut.jpg";
 		   	}
-		    $requete=$bdd->prepare('INSERT INTO user (UserLogin, UserPassword, UserAvatar, UserRole)
+		    $requete1=$bdd->prepare('INSERT INTO user (UserLogin, UserPassword, UserAvatar, UserRole)
 		    VALUES (:login, :pass, :nomavatar, 1)');
-			$requete->bindValue(':login', $login, PDO::PARAM_STR);
-			$requete->bindValue(':pass', $password, PDO::PARAM_INT);
-			$requete->bindValue(':nomavatar', $nomavatar, PDO::PARAM_STR);
-		    $requete->execute();
+			$requete1->bindValue(':login', $login, PDO::PARAM_STR);
+			$requete1->bindValue(':pass', $password, PDO::PARAM_INT);
+			$requete1->bindValue(':nomavatar', $nomavatar, PDO::PARAM_STR);
+		    $requete1->execute();
+
+			$requete2=$bdd->prepare('SELECT UserLogin, UserAvatar, UserRole FROM user WHERE UserLogin = :login');
+			$requete2->bindValue(':login', $login, PDO::PARAM_STR);
+		    $requete2->execute();
+		    extract($requete2->fetch());
 
 			$_SESSION['auth'] = 1;
-			$_SESSION['login'] = $login;
-			$_SESSION['droit'] = 1;
+			$_SESSION['login'] = $UserLogin;
+			$_SESSION['droit'] = $UserRole;
 			$_SESSION['membre_avatar'] = $UserAvatar;
 		    $requete->CloseCursor();
 	    }
