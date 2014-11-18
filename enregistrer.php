@@ -126,7 +126,7 @@
 	        echo'<p>'.$avatar_erreur2.'</p>';
 	        echo'<p>'.$avatar_erreur3.'</p>';
 	       
-	        echo'<p><a href="<?php echo WEBROOT; ?>enregistrer.php">ON REMET CA !</a></p>';
+	        echo'<p><a href="'.WEBROOT.'enregistrer.php">ON REMET CA !</a></p>';
 	        echo'</div></div>';
 	    }
 	}
@@ -148,8 +148,8 @@
 		<form method="post" action="enregistrer.php" enctype="multipart/form-data">
 			<fieldset>
 			<label for="login">Login : (20 caractères max)</label>  <input type="text" class="form-control"name="login" id="login" placeholder="Login" /><br />
-			<label for="password">Password : (20 caractères max)</label><input type="text" class="form-control"name="password" id="password" placeholder="Password"/><br />
-			<label for="confirm">Confirmer le mot de passe :</label><input type="text" class="form-control"name="confirm" id="confirm" placeholder="Password"/><br />
+			<label for="password">Password : (20 caractères max)</label><input type="password" class="form-control"name="password" id="password" placeholder="Password"/><br />
+			<label for="confirm">Confirmer le mot de passe :</label><input type="password" class="form-control"name="confirm" id="confirm" placeholder="Password"/><br />
 			<label for="avatar">Choisissez votre avatar : (100px*100px - 10Ko max)</label><input type="file" name="avatar" id="avatar" /><br />
 			</fieldset>
 			<p><input type="submit" class="btn btn-success" name="submit" value="Inscription" /></p>
