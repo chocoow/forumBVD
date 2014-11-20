@@ -16,15 +16,15 @@
        {
        case '1':
               echo'<h1><img src="'.WEBROOT.'images/avatars/'.$_SESSION['membre_avatar'].'"
-       alt="Ce membre n a pas d avatar" />UTILISATEUR LAMBDA</h1>';
+       alt="Ce membre n\'a pas d avatar" />UTILISATEUR LAMBDA</h1>';
        break;
        case '2':
               echo'<h1><img src="'.WEBROOT.'images/avatars/'.$_SESSION['membre_avatar'].'"
-       alt="Ce membre n a pas d avatar" />MODERATEUR</h1>';
+       alt="Ce membre n\'a pas d avatar" />MODERATEUR</h1>';
        break;    
        case '3':
               echo'<h1><img src="'.WEBROOT.'images/avatars/'.$_SESSION['membre_avatar'].'"
-       alt="Ce membre n a pas d avatar" />ADMINISTRATEUR</h1>';
+       alt="Ce membre n\'a pas d avatar" />ADMINISTRATEUR</h1>';
        break;
        }
 

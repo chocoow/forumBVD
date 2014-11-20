@@ -82,7 +82,7 @@
 			echo'<div class = "jumbotron">';
 			echo'<h1>Inscription terminée</h1>';
 		    echo'<p>Bienvenue '.stripslashes(htmlspecialchars($_POST['login'])).'</p>
-			<p><a href="<?php echo WEBROOT; ?>index.php">HOME</a></p>';
+			<p><a href="'.WEBROOT.'index.php">HOME</a></p>';
 			echo'</div></div>';
 
 			if(!empty($_FILES['avatar']['size']))
@@ -100,16 +100,18 @@
 			$requete1->bindValue(':nomavatar', $nomavatar, PDO::PARAM_STR);
 		    $requete1->execute();
 
-			$requete2=$bdd->prepare('SELECT UserLogin, UserAvatar, UserRole FROM user WHERE UserLogin = :login');
+			$requete2=$bdd->prepare('SELECT UserId, UserLogin, UserAvatar, UserRole FROM user WHERE UserLogin = :login');
 			$requete2->bindValue(':login', $login, PDO::PARAM_STR);
 		    $requete2->execute();
 		    extract($requete2->fetch());
+			$requete->CloseCursor();
 
 			$_SESSION['auth'] = 1;
+			$_SESSION['id'] = $UserId;
 			$_SESSION['login'] = $UserLogin;
 			$_SESSION['droit'] = $UserRole;
 			$_SESSION['membre_avatar'] = $UserAvatar;
-		    $requete->CloseCursor();
+			header("Location:".WEBROOT."index.php");	    
 	    }
 	    else
 	    {

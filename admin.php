@@ -6,22 +6,19 @@
 <?php
 $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
 
-  switch($cat) //1er switch
+  switch($cat)
   {
     case "forum":
-    //Ici forum
-    $action = htmlspecialchars($_GET['action']); //On récupère la valeur de action
 
-    switch($action) //2eme switch
+    $action = htmlspecialchars($_GET['action']);
+    switch($action)
     {
       case "creer":
-      //Création d'un forum
-      //1er cas : pas de variable c
+
       if(empty($_GET['c']))
       {
         echo'<p><a href="'.WEBROOT.'admin.php?cat=forum&action=creer&c=c">Créer une catégorie</a></p>';
       }
-      //3ème cas : on cherche à créer une catégorie (c=c)
       elseif($_GET['c'] == "c")
       {
         echo'<h1>Création d une catégorie</h1>';
@@ -39,7 +36,6 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       }
       elseif($_GET['e'] == "editc")
       {
-        //On commence par afficher la liste des catégories
         if(!isset($_POST['cat']))
         {
           $requete = $bdd->query('SELECT * FROM categories ORDER BY CatDate DESC');
@@ -53,7 +49,6 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
           echo'<input type="submit" value="Envoyer"></p></form>';         
           $requete->CloseCursor();                                                                  
         }         
-        //Puis le formulaire
         else
         {
           $requete = $bdd->prepare('SELECT CatLibelle FROM categories WHERE CatId = :catid');
@@ -70,7 +65,7 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       }
       break;
 
-      default; //action n'est pas remplie, on affiche le menu
+      default;
       if($_SESSION['droit']==='3')
       {
         echo'<h1>Administration du forum</h1>';
@@ -83,12 +78,57 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
     break;
 
     case "membres":
-    //Ici membres
-    $action = htmlspecialchars($_GET['action']); //On récupère la valeur de action
-    switch($action) //2eme switch
+
+    $action = htmlspecialchars($_GET['action']);
+    switch($action)
     {
+
+      case "supprimer":
+
+      echo'<h1>suppression d un membre</h1>';  
+
+      if(!isset($_POST['membre']))
+      {
+        echo'De quel membre voulez-vous disposer ?<br />';
+        echo'<br /><form method="post" action="'.WEBROOT.'admin.php?cat=membres&action=supprimer">
+        <p><label for="membre">Inscrivez le pseudo : </label> 
+        <input type="text" id="membre" name="membre">
+        <input type="submit" value="Chercher"></p></form>';
+      }
+      else
+      {
+        $pseudo_d = $_POST['membre'];
+        if ($pseudo_d == $_SESSION['login'])
+        {
+          setFlash("Désolé, mais vous ne pouvez pas vous supprimer vous meme...","Danger");
+          echo flash();
+          echo 'cliquez <a href="'.WEBROOT.'admin.php?cat=membres&amp;action=supprimer">ici</a> pour réessayer</p>';
+        }
+        else
+        {
+          $requete1 = $bdd->prepare('SELECT UserId FROM user WHERE UserLogin = :pseudo'); 
+          $requete1->bindValue(':pseudo',$pseudo_d,PDO::PARAM_STR);
+          $requete1->execute();
+          if ($data = $requete1->fetch())
+          {       
+            $requete2 = $bdd->prepare('UPDATE messages SET MesText = "Utilisateur supprimé" WHERE UserId = :Id'); 
+            $requete2->bindValue(':Id',$data['UserId'],PDO::PARAM_INT);
+            $requete2->execute();
+            $requete3 = $bdd->prepare('UPDATE user SET UserPassword = NULL, UserRole = 0 WHERE UserId = :Id'); 
+            $requete3->bindValue(':Id',$data['UserId'],PDO::PARAM_INT);
+            $requete3->execute();
+
+            setFlash("l'utilisateur ".$pseudo_d." a bien été supprimé","Danger");
+            echo flash();
+          }                                                                   
+          else echo' <p>Erreur : Ce membre n\'existe pas, <br />
+            cliquez <a href="'.WEBROOT.'admin.php?cat=membres&amp;action=supprimer">ici</a> pour réessayer</p>';
+        }
+      }
+      break;
+
       case "droits":
-      //Droits d'un membre (rang)
+
       echo'<h1>Edition des droits d un membre</h1>';  
 
       if(!isset($_POST['membre']))
@@ -103,8 +143,8 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       {
         $pseudo_d = $_POST['membre'];
         $requete = $bdd->prepare('SELECT UserLogin,UserRole
-          FROM user WHERE LOWER(UserLogin) = :pseudo'); 
-        $requete->bindValue(':pseudo',strtolower($pseudo_d),PDO::PARAM_STR);
+          FROM user WHERE UserLogin = :pseudo'); 
+        $requete->bindValue(':pseudo',$pseudo_d,PDO::PARAM_STR);
         $requete->execute();
         if ($data = $requete->fetch())
         {       
@@ -137,9 +177,9 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       }
       break;
 
-      default; //action n'est pas remplie, on affiche le menu 
+      default;
         echo'<h1>Administration des membres</h1>';
-        echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=supprimer"><s>Supprimer un membre</s></a><br />';
+        echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=supprimer">Supprimer un membre</a><br />';
         if($_SESSION['droit']==='3')
         {
           echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=droits">Modifier les droits d\'un membre</a><br />';

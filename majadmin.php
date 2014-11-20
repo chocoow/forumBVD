@@ -6,22 +6,20 @@
 <?php
 $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
 
-  switch($cat) //1er switch
+  switch($cat)
   {
     case "forum":
-    //Ici forum
-    $action = htmlspecialchars($_GET['action']); //On récupère la valeur de action
 
-    switch($action) //2eme switch
+    $action = htmlspecialchars($_GET['action']);
+
+    switch($action)
     {
       case "creer":
-      //Création d'un forum
-      //1er cas : pas de variable c
+
       if(empty($_GET['c']))
       {
         echo'<p><a href="'.WEBROOT.'admin.php?cat=forum&action=creer&c=c">Créer une catégorie</a></p>';
       }
-      //3ème cas : on cherche à créer une catégorie (c=c)
       if ($_GET['c'] == "c")
       {
         $titre = $_POST['nom'];
@@ -42,10 +40,8 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       }
       elseif($_GET['e'] == "editc")
       {
-        //Récupération d'informations
         $titre = $_POST['nom'];
 
-        //Vérification
         $query=$bdd->prepare('SELECT COUNT(*) 
         FROM categories WHERE CatId = :cat');
         $query->bindValue(':cat',(int) $_POST['cat'],PDO::PARAM_INT);
@@ -54,7 +50,6 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
         $query->CloseCursor();
         if ($cat_existe == 0) erreur(ERR_CAT_EXIST);
         
-        //Mise à jour
         $query=$bdd->prepare('UPDATE categories
         SET CatLibelle = :name WHERE CatId = :cat');
         $query->bindValue(':name',$titre,PDO::PARAM_STR);
@@ -62,14 +57,13 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
         $query->execute();
         $query->CloseCursor();
 
-        //Message
         echo'<p>La catégorie a été modifiée !<br />
         Cliquez <a href="'.WEBROOT.'admin.php">ici</a> 
         pour revenir à l administration</p>';
       }
       break;
 
-      default; //action n'est pas remplie, on affiche le menu
+      default;
       if($_SESSION['droit']==='3')
       {
         echo'<h1>Administration du forum</h1>';
@@ -81,11 +75,11 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
     break;
 
     case "membres":
-    //Ici membres
-    $action = htmlspecialchars($_GET['action']); //On récupère la valeur de action
-    switch($action) //2eme switch
+
+    $action = htmlspecialchars($_GET['action']);
+    switch($action)
     {  
-      case "droits":
+        case "droits":
         $membre =$_POST['pseudo'];
         $rang = (int) $_POST['droits'];
         $query=$bdd->prepare('UPDATE user SET UserRole = :rang
