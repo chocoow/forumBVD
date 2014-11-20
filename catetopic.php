@@ -2,7 +2,22 @@
 <?php include("includes/header.php"); ?>
 <?php if($_SESSION['auth'] == 0) {header("Location:".WEBROOT."index.php");}?>
 	
+<?php
+if (isset($_POST['addTopic']))
+	{
+		extract($_POST);
 
+		if (isset($topicArea))
+		{
+			$requete1 = $bdd->prepare('INSERT INTO topics(TopicLibelle, TopicDate, UserId, CatId) 
+				VALUES (:TopicLibelle,now(),:UserId,:CatId)');
+			$requete1->bindValue(':TopicLibelle',$topicArea, PDO::PARAM_STR);
+			$requete1->bindValue(':UserId',$_SESSION['id'], PDO::PARAM_INT);
+			$requete1->bindValue(':CatId',$CatId, PDO::PARAM_INT);
+			$requete1->execute();
+		}
+	}
+?>
 <?php
 	$requete1 = $bdd->prepare('SELECT * FROM Categories');
 	$requete1->execute();
@@ -13,7 +28,6 @@
 		for ($i = 0; $i < $tmp1count ; $i++) 
 		{
 			echo '<div class="container theme-showcase" role="main">';
-			echo '<div class = "jumbotron">';
 			echo '<div class = "wrap">';
 			echo '<ul class =  "menu">';
 			extract($requete1->fetch());
@@ -30,21 +44,32 @@
 				for ($j = 0; $j < $tmp2count ; $j++) 
 				{
 					extract($requete2->fetch());
-					echo "<li><h3><a href='messages.php?id_topic=".$TopicId."&nom_topic=".$TopicLibelle."'>".$TopicLibelle."</a></h3></li>";
+					echo "<li><a href='messages.php?id_topic=".$TopicId."&nom_topic=".$TopicLibelle."'>".$TopicLibelle."</a></li>";
 				}
-				echo "<ul>";
+				echo "</ul>";
 			}
 			else
 			{
-				echo "<h3>Aucun Topic encore créé.</h3>";
+				setFlash("Aucun Topic encore créé !","danger");
+				echo flash();
 			}
-			echo '</div></div></div></div>';
+
+			if($_SESSION['droit'] == 3)
+			{
+				echo '<div class = "jumbotron"><form method="post">';
+				echo '<textarea id="elm1" name="topicArea">ajouter un nouveau topic ?</textarea>';
+				echo '<input type="hidden" name="CatId" value="'.htmlspecialchars($CatId).'" />';
+				echo '<input type="submit" class="btn btn-success" value="Ajouter Topic" name="addTopic"/>';
+				echo '</form></div>';
+			}
+			echo '</li></div></div>';
 		}
 
 	}
 	else
 	{
-		echo "<h1>Aucune Categorie encore créée.</h1>";
+		setFlash("Aucune Categorie encore créée !","danger");
+		echo flash();
 	}
 ?>
 

@@ -129,7 +129,7 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
 
       case "droits":
 
-      echo'<h1>Edition des droits d un membre</h1>';  
+      echo'<h1>Edition des droits d\'un membre</h1>';  
 
       if(!isset($_POST['membre']))
       {
@@ -142,48 +142,67 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
       else
       {
         $pseudo_d = $_POST['membre'];
-        $requete = $bdd->prepare('SELECT UserLogin,UserRole
-          FROM user WHERE UserLogin = :pseudo'); 
-        $requete->bindValue(':pseudo',$pseudo_d,PDO::PARAM_STR);
-        $requete->execute();
-        if ($data = $requete->fetch())
-        {       
-          echo'<form action="'.WEBROOT.'majadmin.php?cat=membres&amp;action=droits" method="post">';
-          $rang = array
-          ( 0 => "Banni",
-            1 => "Utilisateur Lambda", 
-            2 => "Modérateur", 
-            3 => "Administrateur");
-          echo'<label>'.$data['UserLogin'].'</label>';
-          echo'<select name="droits">';
-          for($i=0;$i<4;$i++)
-          {
-            if ($i == $data['UserRole'])
+
+        $pseudo_d = $_POST['membre'];
+        if ($pseudo_d == $_SESSION['login'])
+        {
+          setFlash("Désolé, mais vous ne pouvez pas vous modifier vos droits vous meme...","Danger");
+          echo flash();
+          echo 'cliquez <a href="'.WEBROOT.'admin.php?cat=membres&amp;action=droits">ici</a> pour réessayer</p>';
+        }
+        else
+        {
+          $requete = $bdd->prepare('SELECT UserLogin,UserRole
+            FROM user WHERE UserLogin = :pseudo and UserRole < :UserRole'); 
+          $requete->bindValue(':pseudo',$pseudo_d,PDO::PARAM_STR);
+          $requete->bindValue(':UserRole',$_SESSION['droit'],PDO::PARAM_STR);
+          $requete->execute();
+          if ($data = $requete->fetch())
+          {       
+            echo'<form action="'.WEBROOT.'majadmin.php?cat=membres&amp;action=droits" method="post">';
+            if($_SESSION['droit'] == 2)
             {
-              echo'<option value="'.$i.'" selected="selected">'.$rang[$i].'</option>';
+              $rang = array
+              ( 0 => "Banni",
+                1 => "Utilisateur Lambda");
             }
-            else
+            elseif($_SESSION['droit'] == 3)
             {
-              echo'<option value="'.$i.'">'.$rang[$i].'</option>';
+              $rang = array
+              ( 0 => "Banni",
+                1 => "Utilisateur Lambda", 
+                2 => "Modérateur", 
+                3 => "Administrateur");
             }
-          }
-          echo'</select>
-          <input type="hidden" value="'.stripslashes($pseudo_d).'" name="pseudo">               
-          <input type="submit" value="Envoyer"></form>';
-          $requete->CloseCursor();
-        }                                                                   
-        else echo' <p>Erreur : Ce membre n existe pas, <br />
-          cliquez <a href="'.WEBROOT.'admin.php?cat=membres&amp;action=edit">ici</a> pour réessayer</p>';
+            echo'<label>'.$data['UserLogin'].'</label>';
+            echo'<select name="droits">';
+            $count = sizeof($rang);
+            for($i=0;$i<$count;$i++)
+            {
+              if ($i == $data['UserRole'])
+              {
+                echo'<option value="'.$i.'" selected="selected">'.$rang[$i].'</option>';
+              }
+              else
+              {
+                echo'<option value="'.$i.'">'.$rang[$i].'</option>';
+              }
+            }
+            echo'</select>
+            <input type="hidden" value="'.stripslashes($pseudo_d).'" name="pseudo">               
+            <input type="submit" value="Envoyer"></form>';
+            $requete->CloseCursor();
+          }                                                                   
+          else echo' <p>Erreur : Ce membre n existe pas, <br />
+            cliquez <a href="'.WEBROOT.'admin.php?cat=membres&amp;action=edit">ici</a> pour réessayer</p>';
+        }
       }
       break;
 
       default;
         echo'<h1>Administration des membres</h1>';
         echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=supprimer">Supprimer un membre</a><br />';
-        if($_SESSION['droit']==='3')
-        {
-          echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=droits">Modifier les droits d\'un membre</a><br />';
-        }
+        echo'<a href="'.WEBROOT.'admin.php?cat=membres&amp;action=droits">Modifier les droits d\'un membre</a><br />';
       break;
     }
     break;

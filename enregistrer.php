@@ -1,5 +1,5 @@
 <?php require_once("includes/header.php"); ?>
-
+<?php if($_SESSION['auth'] != 0) {header("Location:".WEBROOT."index.php");}?>
 <?php
 	if (isset($_POST['submit']))
 	{

@@ -7,6 +7,4 @@
 
 	header("Location:".WEBROOT."index.php");
 ?>
-
-<div><?php var_dump($_SESSION); ?> </div>
 <?php include("includes/footer.php"); ?>

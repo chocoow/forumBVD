@@ -98,7 +98,6 @@
     <textarea id="elm1" name="area"></textarea>
     <input type="submit" class="btn btn-success" value="Poster" name="submit"/>
 </form>
-
 </div>
 
 <?php include("includes/footer.php"); ?>
