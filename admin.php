@@ -28,7 +28,7 @@ $cat = (isset($_GET['cat']))?htmlspecialchars($_GET['cat']):'';
         <input type="submit" value="Envoyer"></form>';
       }
       break;
-
+      
       case "edit":
       if(!isset($_GET['e']))
       {

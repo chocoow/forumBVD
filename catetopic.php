@@ -3,21 +3,41 @@
 <?php if($_SESSION['auth'] == 0) {header("Location:".WEBROOT."index.php");}?>
 	
 <?php
-if (isset($_POST['addTopic']))
-	{
-		extract($_POST);
-
-		if (isset($topicArea))
+	if (isset($_POST['addTopic']))
 		{
-			$requete1 = $bdd->prepare('INSERT INTO topics(TopicLibelle, TopicDate, UserId, CatId) 
-				VALUES (:TopicLibelle,now(),:UserId,:CatId)');
-			$requete1->bindValue(':TopicLibelle',$topicArea, PDO::PARAM_STR);
-			$requete1->bindValue(':UserId',$_SESSION['id'], PDO::PARAM_INT);
-			$requete1->bindValue(':CatId',$CatId, PDO::PARAM_INT);
-			$requete1->execute();
+			extract($_POST);
+
+			if (isset($topicArea))
+			{
+				if($topicArea != "ajouter un nouveau topic ?")
+				{
+					$requete3 = $bdd->prepare('INSERT INTO topics(TopicLibelle, TopicDate, UserId, CatId) 
+						VALUES (:TopicLibelle,now(),:UserId,:CatId)');
+					$requete3->bindValue(':TopicLibelle',$topicArea, PDO::PARAM_STR);
+					$requete3->bindValue(':UserId',$_SESSION['id'], PDO::PARAM_INT);
+					$requete3->bindValue(':CatId',$CatId, PDO::PARAM_INT);
+					$requete3->execute();
+				}
+			}
 		}
-	}
+
+	if (isset($_POST['supprTopic']))
+		{
+			extract($_POST);
+
+			if (isset($TopicId))
+			{
+				$requete4 = $bdd->prepare('DELETE FROM messages WHERE TopicId = :TopicId');
+				$requete4->bindValue(':TopicId',$TopicId, PDO::PARAM_INT);
+				$requete4->execute();
+
+				$requete5 = $bdd->prepare('DELETE FROM topics WHERE TopicId = :TopicId');
+				$requete5->bindValue(':TopicId',$TopicId, PDO::PARAM_INT);
+				$requete5->execute();
+			}
+		}
 ?>
+
 <?php
 	$requete1 = $bdd->prepare('SELECT * FROM Categories');
 	$requete1->execute();
@@ -44,7 +64,15 @@ if (isset($_POST['addTopic']))
 				for ($j = 0; $j < $tmp2count ; $j++) 
 				{
 					extract($requete2->fetch());
-					echo "<li><a href='messages.php?id_topic=".$TopicId."&nom_topic=".$TopicLibelle."'>".$TopicLibelle."</a></li>";
+					echo "<li><a href='messages.php?id_topic=".$TopicId."&nom_topic=".$TopicLibelle."'>".$TopicLibelle."</a>";
+					if($_SESSION['droit'] == 2 || $_SESSION['droit'] == 3)
+					{
+						echo '<form method="post">';
+						echo '<input type="hidden" name="TopicId" value="'.htmlspecialchars($TopicId).'" />';
+						echo '<input type="submit" class="btn btn-warning" value="Supprimer Topic" name="supprTopic"/>';
+						echo '</form>';
+					}
+					echo "</li>";
 				}
 				echo "</ul>";
 			}

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 13 Novembre 2014 à 12:53
+-- Généré le :  Ven 21 Novembre 2014 à 09:10
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   PRIMARY KEY (`MesId`),
   KEY `UserId` (`UserId`),
   KEY `TopicId` (`TopicId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
 
 --
 -- Contenu de la table `messages`
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `topics` (
   PRIMARY KEY (`TopicId`),
   KEY `UserId` (`UserId`),
   KEY `CatId` (`CatId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
 -- Contenu de la table `topics`
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `UserAvatar` varchar(200) NOT NULL,
   PRIMARY KEY (`UserId`),
   UNIQUE KEY `UserLogin` (`UserLogin`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Contenu de la table `user`
@@ -137,7 +137,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`UserId`, `UserLogin`, `UserPassword`, `UserRole`, `UserAvatar`) VALUES
 (12, 'admin', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 3, 'defaut.jpg'),
 (13, 'moderateur', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 2, 'defaut.jpg'),
-(14, 'utilisateur', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 1, 'defaut.jpg');
+(14, 'utilisateur', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 1, 'defaut.jpg'),
+(15, 'banni', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 0, 'defaut.jpg');
 
 --
 -- Contraintes pour les tables exportées
